@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "a_star_viz"
+version = "0.1.0"
+description = "A help to visualize the a star algorithm in seperate steps"
+authors = [{name = "Kilian Ernst", email = "kilianernst96@gmail.com"}]
+license = {text = "MIT"}
+dependencies = ["numpy", "matplotlib"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
