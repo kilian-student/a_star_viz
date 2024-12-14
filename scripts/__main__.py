@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QApplication
-
 from utils.main_window import MainWindow
 
 

@@ -7,12 +7,6 @@ Modules:
 - MainWindow(QMainWindow): Handle Qt Widgets
 
 
-TODO:
-- clean up: document functions, clean imports, extend init/python package settings
-- bugfix algorithms
-- add node information for mouse hover
-- add current path information, highlight shortest path
-
 Author: Kilian Ernst
 Version: 1.0.0
 """
