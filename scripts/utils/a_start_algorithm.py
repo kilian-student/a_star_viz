@@ -43,11 +43,13 @@ class A_star():
                 if neighbour in self.open_list:
                     if neighbour.g > neighbour_g_new:
                         neighbour.g = neighbour_g_new
+                        neighbour.parent = current_node
                 elif neighbour in self.closed_list:
                     if neighbour.g > neighbour_g_new:
                         raise NotImplementedError('Closed nodes should not need to be reopened!')
                 else:
                     neighbour.g = neighbour_g_new
+                    neighbour.parent = current_node
                     heapq.heappush(self.open_list, neighbour)
             return current_node
 
@@ -77,7 +79,7 @@ class A_star():
             return True
         return False
 
-    def plot_graph(self, plt_axes: Optional[Axes] = None, current_node = False, show_open = False, show_closed = False):
+    def plot_graph(self, plt_axes: Optional[Axes] = None, show_current_node = False, show_open = False, show_closed = False, show_ideal_path = False):
         """Plots the current state of the algorithm in matplotlib
 
         Args:
@@ -98,8 +100,15 @@ class A_star():
             nx.draw_networkx_nodes(self.graph, pos_dict, self.open_list, ax=plt_axes, node_size=const.NODE_SIZE, edgecolors=const.NODE_EDGE_COLOR_OPEN)
         if show_closed and self.closed_list:
             nx.draw_networkx_nodes(self.graph, pos_dict, self.closed_list, ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CLOSED)
-        if current_node and self.current_node:
+        if show_current_node and self.current_node:
             nx.draw_networkx_nodes(self.graph, pos_dict, [self.current_node], ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CURRENT)
+        if show_current_node and self.current_node and show_ideal_path:
+            ideal_nodes_list = []
+            ideal_node = self.current_node
+            while ideal_node.parent:
+                ideal_nodes_list.append(ideal_node)
+                ideal_node = ideal_node.parent
+            nx.draw_networkx_nodes(self.graph, pos_dict, ideal_nodes_list, ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_IDEAL_PATH)
         edge_labels = nx.get_edge_attributes(self.graph, "weight")
         nx.draw_networkx_edge_labels(self.graph, pos_dict, ax=plt_axes, edge_labels=edge_labels, font_color=const.EDGE_COLOR)
         plt.show()

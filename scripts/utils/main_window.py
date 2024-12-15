@@ -83,10 +83,10 @@ class MatplotlibWidget(QWidget):
         target_reached = False
         if full_run:
             target_reached = self.algorithm.full_run()
-            self.algorithm.plot_graph(self._ax, show_closed=True)
+            self.algorithm.plot_graph(self._ax, show_current_node=True, show_closed=True, show_ideal_path=True)
         else:
             target_reached = self.algorithm.single_step_run()
-            self.algorithm.plot_graph(self._ax, True, True, True)
+            self.algorithm.plot_graph(self._ax, True, True, True, True)
 
         # Refresh the canvas
         self.canvas.draw()

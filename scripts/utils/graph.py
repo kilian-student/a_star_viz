@@ -1,3 +1,6 @@
+# standard library
+from typing import Optional
+
 # Third-party imports
 import networkx as nx  # type: ignore
 
@@ -14,6 +17,15 @@ class Node():
         self._g: float = float('inf')
         self._h: float = float('inf')
         self._f: float = 0
+        self._parent: Optional[Node] = None
+
+    @property
+    def parent(self):
+        return self._parent
+    
+    @parent.setter
+    def parent(self, prev_node):
+        self._parent = prev_node
 
     @property
     def h(self) -> float:
@@ -106,7 +118,7 @@ class Graph(nx.Graph):
                     node.connected_nodes.append(list(self.nodes)[node._id-21])
                 # Kanten hinzufügen
                 for neighbour in node.connected_nodes:
-                    self.add_edge(node, neighbour, color='blue', weight=const.EDGE_WEIGHT)#weight=random.randint(2, 5))
+                    self.add_edge(node, neighbour, color='blue', weight=const.EDGE_WEIGHT)
                 i+=1
 
     @property
