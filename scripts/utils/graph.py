@@ -1,9 +1,9 @@
 # Third-party imports
-import random
 import networkx as nx  # type: ignore
 
 # Local application imports
 from utils.geometry import Point2D
+from utils import constants as const
 
 class Node():
 
@@ -106,7 +106,7 @@ class Graph(nx.Graph):
                     node.connected_nodes.append(list(self.nodes)[node._id-21])
                 # Kanten hinzufügen
                 for neighbour in node.connected_nodes:
-                    self.add_edge(node, neighbour, color='blue', weight=random.randint(2, 5))
+                    self.add_edge(node, neighbour, color='blue', weight=const.EDGE_WEIGHT)#weight=random.randint(2, 5))
                 i+=1
 
     @property

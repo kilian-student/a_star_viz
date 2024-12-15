@@ -27,7 +27,7 @@ class A_star():
 
     def init_heuristic_estimation(self):
         for node in self.graph.nodes:
-            distance = euclidian_distance(node.pos, self.graph.target_node.pos)
+            distance = const.H_SCALE*euclidian_distance(node.pos, self.graph.target_node.pos)
             node.h = distance
 
     def go_algo_step(self) -> Node:
@@ -35,34 +35,47 @@ class A_star():
             self.closed_list.add(current_node)
             if current_node == self.graph.target_node:
                 print('Yeah! Target reached!')
-                return
+                return current_node
             for neighbour in list(self.graph.neighbors(current_node._id)):
                 cost_current_to_neighbour = self.graph[current_node._id][neighbour]['weight']
-                neighbour_cost = current_node.g + cost_current_to_neighbour
-                if neighbour in self.open_list and neighbour.f > neighbour_cost:
-                        neighbour.g = neighbour_cost
+                neighbour_g_new = current_node.g + cost_current_to_neighbour
+                #neighbour_f_new = neighbour.h + neighbour_g_new
+                if neighbour in self.open_list:
+                    if neighbour.g > neighbour_g_new:
+                        neighbour.g = neighbour_g_new
                 elif neighbour in self.closed_list:
-                    pass
+                    if neighbour.g > neighbour_g_new:
+                        raise NotImplementedError('Closed nodes should not need to be reopened!')
                 else:
-                    neighbour.g = neighbour_cost
+                    neighbour.g = neighbour_g_new
                     heapq.heappush(self.open_list, neighbour)
             return current_node
 
-    def full_run(self):
+    def full_run(self) -> bool:
         """Execution of whole Algorithm till end (target reached/open list empty) without stopping.
+        Return:
+            bool: True if the target node is reached else False
         """
         while self.open_list:
             self.current_node = self.go_algo_step()
+            if self.current_node == self.graph.target_node:
+                 return True
+        return False
 
-    def single_step_run(self):
+    def single_step_run(self) -> bool:
         """Allows execution of single step of the algorith. 
         This mean only one new node from open list is selected and its neighbours updated.
         Raises:
             NotImplementedError: Missing functionality when reached target!!
+        Return:
+            bool: True if the target node is reached else False
         """
         if not self.open_list:
             raise NotImplementedError('algo finished!!')
         self.current_node = self.go_algo_step()
+        if self.current_node == self.graph.target_node:
+            return True
+        return False
 
     def plot_graph(self, plt_axes: Optional[Axes] = None, current_node = False, show_open = False, show_closed = False):
         """Plots the current state of the algorithm in matplotlib
