@@ -100,8 +100,6 @@ class A_star():
             nx.draw_networkx_nodes(self.graph, pos_dict, self.open_list, ax=plt_axes, node_size=const.NODE_SIZE, edgecolors=const.NODE_EDGE_COLOR_OPEN)
         if show_closed and self.closed_list:
             nx.draw_networkx_nodes(self.graph, pos_dict, self.closed_list, ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CLOSED)
-        if show_current_node and self.current_node:
-            nx.draw_networkx_nodes(self.graph, pos_dict, [self.current_node], ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CURRENT)
         if show_current_node and self.current_node and show_ideal_path:
             ideal_nodes_list = []
             ideal_node = self.current_node
@@ -109,6 +107,8 @@ class A_star():
                 ideal_nodes_list.append(ideal_node)
                 ideal_node = ideal_node.parent
             nx.draw_networkx_nodes(self.graph, pos_dict, ideal_nodes_list, ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_IDEAL_PATH)
+        if show_current_node and self.current_node:
+            nx.draw_networkx_nodes(self.graph, pos_dict, [self.current_node], ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CURRENT)
         edge_labels = nx.get_edge_attributes(self.graph, "weight")
         nx.draw_networkx_edge_labels(self.graph, pos_dict, ax=plt_axes, edge_labels=edge_labels, font_color=const.EDGE_COLOR)
         plt.show()
