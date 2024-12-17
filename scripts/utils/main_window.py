@@ -91,6 +91,15 @@ class MatplotlibWidget(QWidget):
         # Refresh the canvas
         self.canvas.draw()
         return target_reached
+    
+    def reset_graph(self):
+        """Overwrites the current algorithm with a new one. Clears figure and draws new graph.
+        """
+        self.algorithm = A_star()
+        self.figure.clear()
+        self._ax = self.figure.add_subplot(111)
+        self.algorithm.plot_graph(self._ax)
+        self.canvas.draw()
 
 
 class MainWindow(QMainWindow):
@@ -126,10 +135,14 @@ class MainWindow(QMainWindow):
         button_last = QPushButton("Complete run")
         button_last.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         button_last.clicked.connect(lambda: self.button_algorithm_action(True))
-        
+        button_layout.addWidget(button_last)
         self.target_reached_signal = TargetReachedSignal()
         self.target_reached_signal.reached.connect(lambda hide: self.hide_buttons(hide, button_next, button_last))
-        button_layout.addWidget(button_last)
+        
+        button_reset = QPushButton("Reset graph")
+        button_reset.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        button_reset.clicked.connect(self.reset_graph_action)
+        button_layout.addWidget(button_reset)
 
         # Add Label to give node information
         label_node_info = QLabel("")
@@ -142,9 +155,12 @@ class MainWindow(QMainWindow):
         layout.addLayout(button_layout)
 
     def hide_buttons(self, hide: bool, button_next: QPushButton, button_last: QPushButton):
-        if hide:
-            button_next.setDisabled(hide)
-            button_last.setDisabled(hide)
+        button_next.setDisabled(hide)
+        button_last.setDisabled(hide)
+
+    def reset_graph_action(self):
+        self.matplotlib_widget.reset_graph()
+        self.target_reached_signal.reached.emit(False)
             
 
     def button_algorithm_action(self, full_run = False):
