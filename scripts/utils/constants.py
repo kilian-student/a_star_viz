@@ -18,5 +18,5 @@ NODE_SIZE = 500
 #####################
 # Algorithm Parameter
 #####################
-EDGE_WEIGHT = 2 # #random.randint(2, 5)
-H_SCALE = 1.3
+EDGE_WEIGHT = 2#random.randint(2, 5)
+H_SCALE = 1.4

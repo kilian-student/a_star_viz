@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 # All units in mm!
 
@@ -6,6 +7,9 @@ class Point2D():
     def __init__(self, x: float, y: float):
         self._x = x
         self._y = y
+
+    def __iter__(self):
+        return iter([self._x, self._y])
 
     @property
     def x(self)->float:
@@ -26,10 +30,10 @@ class Point2D():
 
 # Distance calculations
 def euclidian_distance(point1: Point2D, point2: Point2D):
-    return math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2)
+    return math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2)
 
-def manhatten_distance():
-    pass
+def manhatten_distance(point1: Point2D, point2: Point2D):
+    return np.sum([np.abs(point1.x - point2.x),  np.abs(point1.y - point2.y)])
 
 def minkowski_distance():
     pass

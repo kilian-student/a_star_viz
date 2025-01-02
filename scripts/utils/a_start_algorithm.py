@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
 # Local application imports
-from utils.geometry import euclidian_distance
+from utils.geometry import euclidian_distance, manhatten_distance
 from utils.graph import Node, Graph
 import utils.constants as const
 
@@ -27,7 +27,7 @@ class A_star():
 
     def init_heuristic_estimation(self):
         for node in self.graph.nodes:
-            distance = const.H_SCALE*euclidian_distance(node.pos, self.graph.target_node.pos)
+            distance = const.H_SCALE*manhatten_distance(node.pos, self.graph.target_node.pos)
             node.h = distance
 
     def go_algo_step(self) -> Node:
