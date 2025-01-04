@@ -11,5 +11,5 @@ a_star_viz is a Python library for showing the A* algorithm in a pyqt applicatio
 ## Starting the application
 
 ```bash
-python .a_star_vis/scripts/__main__.py
+python .a_star_vis/scripts/
 ```
