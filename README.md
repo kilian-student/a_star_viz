@@ -15,3 +15,5 @@ a_star_viz is a Python library for showing the A* algorithm in a pyqt applicatio
 ```bash
 python .a_star_vis/scripts/
 ```
+
+![Example image](pictures/application_screenshot.png "This is an example image")
