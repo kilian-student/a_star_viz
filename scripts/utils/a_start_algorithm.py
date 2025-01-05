@@ -1,5 +1,7 @@
 # standard lib
-from typing import List, Optional
+from typing import List, Optional, Union, Tuple, Callable, Set
+from dataclasses import dataclass, field
+
 
 # Third-party imports
 import heapq
@@ -8,26 +10,35 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
 # Local application imports
-from utils.geometry import euclidian_distance, manhatten_distance
+from utils.geometry import DistanceFunc, EuclidianDistance, ManhattenDistance
 from utils.graph import Node, Graph
 import utils.constants as const
+
+@dataclass
+class A_star_parameter:
+    distance_method: DistanceFunc = field(default_factory=EuclidianDistance)
+    h_scale: float = 1.4
+    edge_weight: Union[float, Tuple] = 2.0
+    start_node: int = 1
+    target_node: int = 200
+    disabled_nodes: list = field(default_factory=list)
 
 class A_star():
     """class for executing the algorithm steps
     """
 
-    def __init__(self):
+    def __init__(self, parameter: A_star_parameter):
         self.open_list: List[Node] = []
-        self.closed_list = set()
+        self.closed_list: Set[Node] = set()
         self.current_node : Optional[Node] = None
-        self.graph = Graph()
+        self.graph = Graph(parameter.start_node, parameter.target_node, parameter.edge_weight)
         heapq.heappush(self.open_list, self.graph.start_node)
-        self.init_heuristic_estimation()
+        self.init_heuristic_estimation(parameter.distance_method, parameter.h_scale)
         self.graph.start_node.g = 0
 
-    def init_heuristic_estimation(self):
+    def init_heuristic_estimation(self, dist_func: DistanceFunc, scale_factor: float):
         for node in self.graph.nodes:
-            distance = const.H_SCALE*manhatten_distance(node.pos, self.graph.target_node.pos)
+            distance = scale_factor*dist_func(node.pos, self.graph.target_node.pos)
             node.h = distance
 
     def go_algo_step(self) -> Node:
@@ -44,6 +55,7 @@ class A_star():
                     if neighbour.g > neighbour_g_new:
                         neighbour.g = neighbour_g_new
                         neighbour.parent = current_node
+                        # TODO: does the order of the heap needs to be changed?!!
                 elif neighbour in self.closed_list:
                     if neighbour.g > neighbour_g_new:
                         raise NotImplementedError('Closed nodes should not need to be reopened!')
@@ -115,5 +127,5 @@ class A_star():
 
 
 if __name__ == "__main__":
-        algo = A_star()
+        algo = A_star(A_star_parameter())
         algo.full_run()

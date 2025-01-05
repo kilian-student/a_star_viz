@@ -1,8 +1,10 @@
 # standard library
-from typing import Optional
+from typing import Optional, Union, Tuple
+import random
 
 # Third-party imports
 import networkx as nx  # type: ignore
+import numpy as np
 
 # Local application imports
 from utils.geometry import Point2D
@@ -98,10 +100,14 @@ class Graph(nx.Graph):
     see documenation for nx.Graph: https://networkx.org
     """
     
-    def __init__(self, start_node_id: int = 0, target_node_id: int = -1):
+    def __init__(self, start_node_id: int = 0, target_node_id: int = -1, edge_weight: Union[float, Tuple] = 2):
         super(Graph, self).__init__()
         self._start_node_id = start_node_id
         self._target_node_id = target_node_id
+        if not isinstance(edge_weight, tuple):
+            if np.abs(int(edge_weight) - edge_weight) < 0.1:
+                edge_weight = int(edge_weight)
+        self._edge_weight = edge_weight
         
         self.init_nodes()
 
@@ -118,16 +124,19 @@ class Graph(nx.Graph):
                     node.connected_nodes.append(list(self.nodes)[node._id-21])
                 # Kanten hinzufügen
                 for neighbour in node.connected_nodes:
-                    self.add_edge(node, neighbour, color='blue', weight=const.EDGE_WEIGHT)
+                    edge_weight = self._edge_weight
+                    if isinstance(self._edge_weight, tuple):
+                        edge_weight = random.randint(self._edge_weight[0], self._edge_weight[1])
+                    self.add_edge(node, neighbour, color='blue', weight=edge_weight)
                 i+=1
 
     @property
     def start_node(self) -> Node:
-        return list(self.nodes)[self._start_node_id]
+        return list(self.nodes)[self._start_node_id - 1]
     
     @property
     def target_node(self) -> Node:
-        return list(self.nodes)[self._target_node_id]
+        return list(self.nodes)[self._target_node_id - 1]
 
 
 

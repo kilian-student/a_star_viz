@@ -6,7 +6,9 @@ a_star_viz is a Python library for showing the A* algorithm in a pyqt applicatio
 
 - highlight node on mouse hover
 - hightlight current node whose information is displayed
-- add current path information, highlight ideal path
+- add current path information
+- add data tab
+- add help information: node coloring, algorithm information...
 
 ## Starting the application
 
