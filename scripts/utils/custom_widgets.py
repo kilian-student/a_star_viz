@@ -1,3 +1,6 @@
+from typing import Optional
+
+import networkx as nx
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QRadioButton, QDoubleSpinBox, QHBoxLayout, QLineEdit
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QObject
@@ -5,10 +8,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 
-from typing import Optional
+
 
 from utils.a_start_algorithm import A_star, A_star_parameter
 from utils.geometry import EuclidianDistance, ManhattenDistance
+from utils import constants as const
 
 ################
 # Custom Signals
@@ -285,5 +289,27 @@ class InfoPageWidget(QWidget):
         self.setWindowTitle('Node color overview')
         main_layout = QVBoxLayout()
         main_layout.addWidget(QLabel('This shows information about the node coloring...'))
+        self.draw_node_description("Start node", main_layout, const.NODE_EDGE_COLOR_START, const.NODE_COLOR_START)
+        self.draw_node_description("Target node", main_layout, const.NODE_EDGE_COLOR_TARGET, const.NODE_COLOR_TARGET)
+        self.draw_node_description("Open node", main_layout, const.NODE_EDGE_COLOR_OPEN, const.NODE_COLOR_OPEN)
+        self.draw_node_description("Closed node", main_layout, const.NODE_EDGE_COLOR_CLOSED, const.NODE_COLOR_CLOSED)
+        self.draw_node_description("Node on ideal path", main_layout, const.NODE_EDGE_COLOR_IDEAL, const.NODE_COLOR_IDEAL_PATH)
+        self.draw_node_description("Current active node", main_layout, const.NODE_EDGE_COLOR_CURRENT, const.NODE_COLOR_CURRENT)
+
         self.setLayout(main_layout)
 
+
+    def draw_node_description(self, text: str, main_layout: QVBoxLayout, edge_color: str, node_color: str):
+        h_layout  = QHBoxLayout()
+        h_layout.addWidget(QLabel(text + ": "))
+        
+        figure = Figure(figsize=(0.5, 0.5))
+        canvas = FigureCanvas(figure)
+        h_layout.addWidget(canvas)
+        main_layout.addLayout(h_layout)
+        G = nx.Graph()
+        G.add_node(1)
+        ax = figure.add_subplot(111)
+        ax.clear()
+        nx.draw_networkx_nodes(G, {1: (0,0)}, [1], ax=ax, node_color=node_color, node_size=500, edgecolors = edge_color, linewidths=const.NODE_EDGE_WIDTH)
+        canvas.draw()

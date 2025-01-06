@@ -105,22 +105,53 @@ class A_star():
         for node in self.graph.nodes:
             pos_dict.update({node: (node.pos.x, node.pos.y)})
         # Zeichne den Graphen
-        nx.draw(self.graph, pos_dict, ax=plt_axes, with_labels=True, node_color=const.NODE_COLOR_DEFAULT, node_size=const.NODE_SIZE, font_size=16, )
+        nx.draw(self.graph, pos_dict, ax=plt_axes, with_labels=True, node_color=const.NODE_COLOR_DEFAULT, node_size=const.NODE_SIZE, font_size=16, 
+                edgecolors=const.NODE_EDGE_COLOR_DEFAULT)
         
-        # Use different node colors for node states (Nodes in open list, currently open node)
+        # Node coloring
+        # Open nodes
         if show_open and self.open_list:
-            nx.draw_networkx_nodes(self.graph, pos_dict, self.open_list, ax=plt_axes, node_size=const.NODE_SIZE, edgecolors=const.NODE_EDGE_COLOR_OPEN)
+            nx.draw_networkx_nodes(self.graph, pos_dict, self.open_list, ax=plt_axes, node_size=const.NODE_SIZE, 
+                                   edgecolors=const.NODE_EDGE_COLOR_OPEN, 
+                                   linewidths=const.NODE_EDGE_WIDTH, 
+                                   node_color=const.NODE_EDGE_COLOR_OPEN)
+        # Closed nodes
         if show_closed and self.closed_list:
-            nx.draw_networkx_nodes(self.graph, pos_dict, self.closed_list, ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CLOSED)
+            nx.draw_networkx_nodes(self.graph, pos_dict, self.closed_list, ax=plt_axes, node_size=const.NODE_SIZE, 
+                                   node_color=const.NODE_COLOR_CLOSED,
+                                   linewidths=const.NODE_EDGE_WIDTH,
+                                   edgecolors=const.NODE_EDGE_COLOR_CLOSED)
+        # Ideal path
         if show_current_node and self.current_node and show_ideal_path:
             ideal_nodes_list = []
             ideal_node = self.current_node
             while ideal_node.parent:
                 ideal_nodes_list.append(ideal_node)
                 ideal_node = ideal_node.parent
-            nx.draw_networkx_nodes(self.graph, pos_dict, ideal_nodes_list, ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_IDEAL_PATH)
+            nx.draw_networkx_nodes(self.graph, pos_dict, ideal_nodes_list, ax=plt_axes, node_size=const.NODE_SIZE, 
+                                   node_color=const.NODE_COLOR_IDEAL_PATH,
+                                   edgecolors=const.NODE_EDGE_COLOR_IDEAL,
+                                   linewidths=const.NODE_EDGE_WIDTH)
+        
+        # Current node
         if show_current_node and self.current_node:
-            nx.draw_networkx_nodes(self.graph, pos_dict, [self.current_node], ax=plt_axes, node_size=const.NODE_SIZE, node_color=const.NODE_COLOR_CURRENT)
+            nx.draw_networkx_nodes(self.graph, pos_dict, [self.current_node], ax=plt_axes, node_size=const.NODE_SIZE, 
+                                   node_color=const.NODE_COLOR_CURRENT,
+                                   linewidths=const.NODE_EDGE_WIDTH,
+                                   edgecolors=const.NODE_EDGE_COLOR_CURRENT)
+
+        # Start node
+        nx.draw_networkx_nodes(self.graph, pos_dict, [self.graph.start_node._id], ax=plt_axes, node_size=const.NODE_SIZE, 
+                               node_color=const.NODE_COLOR_START,
+                               linewidths=const.NODE_EDGE_WIDTH,
+                               edgecolors=const.NODE_EDGE_COLOR_START)
+
+        # Target node
+        nx.draw_networkx_nodes(self.graph, pos_dict, [self.graph._target_node_id], ax=plt_axes, node_size=const.NODE_SIZE, 
+                               node_color=const.NODE_COLOR_TARGET,
+                               linewidths=const.NODE_EDGE_WIDTH,
+                               edgecolors=const.NODE_EDGE_COLOR_TARGET)
+
         edge_labels = nx.get_edge_attributes(self.graph, "weight")
         nx.draw_networkx_edge_labels(self.graph, pos_dict, ax=plt_axes, edge_labels=edge_labels, font_color=const.EDGE_COLOR)
         plt.show()
