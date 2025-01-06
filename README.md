@@ -4,11 +4,11 @@ a_star_viz is a Python library for showing the A* algorithm in a pyqt applicatio
 
 ## TODO
 
+- add data tab: information about the current node states (ideal path, node at top of open list heap, current path cost, ...)
+- add cross connections
 - highlight node on mouse hover
 - hightlight current node whose information is displayed
-- add current path information
-- add data tab
-- add help information: node coloring, algorithm information...
+
 
 ## Starting the application
 
