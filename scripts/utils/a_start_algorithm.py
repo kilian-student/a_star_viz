@@ -55,7 +55,6 @@ class A_star():
                     if neighbour.g > neighbour_g_new:
                         neighbour.g = neighbour_g_new
                         neighbour.parent = current_node
-                        # TODO: does the order of the heap needs to be changed?!!
                 elif neighbour in self.closed_list:
                     if neighbour.g > neighbour_g_new:
                         raise NotImplementedError('Closed nodes should not need to be reopened!')
@@ -63,6 +62,7 @@ class A_star():
                     neighbour.g = neighbour_g_new
                     neighbour.parent = current_node
                     heapq.heappush(self.open_list, neighbour)
+            heapq.heapify(self.open_list)
             return current_node
 
     def full_run(self) -> bool:
