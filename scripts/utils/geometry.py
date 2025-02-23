@@ -51,7 +51,7 @@ class DistanceFunc(ABC):
 class EuclidianDistance(DistanceFunc):
 
     def get_distance(self, point1: Point2D, point2: Point2D):
-        return math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2)
+        return ((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) ** 0.6
 
     def __str__(self):
         return "Euclidian distance"

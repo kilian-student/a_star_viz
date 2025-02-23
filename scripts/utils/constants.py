@@ -23,6 +23,9 @@ NODE_EDGE_COLOR_START = "grey"
 # target node
 NODE_COLOR_TARGET = "yellow"
 NODE_EDGE_COLOR_TARGET = "grey"
+# Disabled node
+NODE_COLOR_DISABLE = "black"
+NODE_EDGE_COLOR_DISABLE = "black"
 
 
 # unified values

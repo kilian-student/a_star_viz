@@ -1,7 +1,7 @@
 from typing import Optional
 
 import networkx as nx
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QRadioButton, QDoubleSpinBox, QHBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QRadioButton, QDoubleSpinBox, QHBoxLayout, QLineEdit, QTableWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QObject
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -232,7 +232,10 @@ class ConfigWidget(QWidget):
         disabled_nodes_layout  = QHBoxLayout()
         disabled_nodes_layout.addWidget(QLabel('Disable nodes:'))
         self.disabled_nodes_input = QLineEdit()
-        self.disabled_nodes_input.setPlaceholderText("ex.: 20, 21, 30-35")
+        if not a_star_parameter.disabled_nodes:
+            self.disabled_nodes_input.setPlaceholderText("ex.: 20, 21, 30-35")
+        else:
+            self.disabled_nodes_input.setText(str(a_star_parameter.disabled_nodes)[1:-1])
         self.disabled_nodes_input.textChanged.connect(self.check_disabled_nodes_text)
         disabled_nodes_layout.addWidget(self.disabled_nodes_input)
         v_layout.addLayout(disabled_nodes_layout)
@@ -247,7 +250,18 @@ class ConfigWidget(QWidget):
         self.setLayout(v_layout)
 
     def check_disabled_nodes_text(self):
-        check_ok = False
+        check_ok = True
+        try:
+            disabled_text = str(self.disabled_nodes_input.text())
+            if not disabled_text == "":
+                nodes_list = [int(item.strip()) for item in disabled_text.split(",")]
+                for node in nodes_list:
+                    if not 1 <= node <= 200:
+                        raise ValueError(f'Node number {node} out of bounds (1, 200)! Can not create disabled node')
+        except Exception as e:
+            print(str(e))
+            check_ok = False
+
         if check_ok:
             self.disabled_nodes_error_label.setText("")
             self.disabled_nodes_error_label.hide()
@@ -268,6 +282,15 @@ class ConfigWidget(QWidget):
         self.a_star_parameter.start_node = int(self.start_node_sb.value())
         self.a_star_parameter.target_node = int(self.target_node_sb.value())
 
+        try:
+            disabled_text = self.disabled_nodes_input.text()
+            nodes_list = []
+            if disabled_text != "":
+                nodes_list = [int(item.strip()) for item in disabled_text.split(",")]
+            self.a_star_parameter.disabled_nodes = nodes_list
+        except Exception as e:
+            print(f"Error reading disabled nodes list: {str(e)}")
+
         self.graph_widget.reset_graph()
         self.close()
         self.graph_widget.target_reached_signal.reached.emit(False)
@@ -278,8 +301,17 @@ class DataWidget(QWidget):
         super().__init__(parent)
         v_layout = QVBoxLayout()
         # tab description
-        v_layout.addWidget(QLabel('Collection of graph data:'))
-        v_layout.addWidget(QLabel('TODO...'))
+        statements_tuple = ('Lemma 1', 'Lemma 2', '...')
+        table_widget = QTableWidget(len(statements_tuple) + 1, 3)
+        table_widget.setCellWidget(0, 0, QLabel('Statement'))
+        table_widget.setCellWidget(0, 1, QLabel('Status'))
+        table_widget.setCellWidget(0, 2, QLabel('Reload check'))
+        
+        for i, statement in enumerate(statements_tuple, 1):
+            table_widget.setCellWidget(i, 0, QLabel(statement))
+        v_layout.addWidget(table_widget)
+        v_layout.addWidget(QLabel('Lemma 1: '))
+        v_layout.addWidget(QLabel(''))
 
         self.setLayout(v_layout)
 
